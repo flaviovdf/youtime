@@ -13,14 +13,21 @@ from time import strptime
 
 from youtime.parser import info_files
 from youtime.parser import stats_files
+
 from youtime.parser.test import ENG_INFO_FILE
 from youtime.parser.test import ENG_STATS_FILE
+
 from youtime.parser.test import PTBR_INFO_FILE
 from youtime.parser.test import PTBR_STATS_FILE
+
 from youtime.parser.test import NEW_INFO_FILE
 from youtime.parser.test import NEW_INFO_FILE2
+
 from youtime.parser.test import NEW_STATS_FILE
 from youtime.parser.test import NEW_STATS_FILE2
+
+from youtime.parser.test import TOPIC_INFO_FILE
+from youtime.parser.test import TOPIC_STATS_FILE
 
 import unittest
 
@@ -69,6 +76,16 @@ class TestStatsFile(unittest.TestCase):
         xml_for_vid = xmls['ZzmEBY6lVAE']
         lines = xml_for_vid.split('\n')
         self.assertEqual(292, len(lines))
+
+    def test_extract_xmls_topic(self):
+        up_dates = info_files.up_dates_html_topic(TOPIC_INFO_FILE)
+        
+        xmls = stats_files._get_video_xmls(TOPIC_STATS_FILE, up_dates)
+        self.assertEqual(1, len(xmls))
+        
+        xml_for_vid = xmls['zgY-cR0kv5Y']
+        lines = xml_for_vid.split('\n')
+        self.assertEqual(222, len(lines))
 
     def test_parse_html_eng(self):
         
@@ -148,7 +165,7 @@ class TestStatsFile(unittest.TestCase):
         self.assertEqual(0, video_data['HONORS'])
         self.assertEqual(10, len(video_data['EVENTS']))
 
-    def test_parse_html_new (self):
+    def test_parse_html_new(self):
         
         video_id = 'p0Jwx7n2cwc'
         up_dates = info_files.up_dates_html_new(NEW_INFO_FILE)
@@ -195,8 +212,56 @@ class TestStatsFile(unittest.TestCase):
         
         self.assertEqual(1212, video_data['TOPY'])
         self.assertEqual(10, len(video_data['EVENTS']))
+    
+    def test_parse_topics(self):
         
-    def test_parse_html_new2 (self):
+        video_id = 'zgY-cR0kv5Y'
+        up_dates = info_files.up_dates_html_topic(TOPIC_INFO_FILE)
+        
+        xmls = stats_files._get_video_xmls(TOPIC_STATS_FILE, up_dates)
+        xml_soup = BeautifulStoneSoup(xmls[video_id])
+        html = xml_soup.find('html_content').string
+
+        video_data = stats_files._parse_html_topic(video_id, html, up_dates)
+        
+        expected_view_data = [0.0, 28.6, 50.4, 54.9, 59.8, 62.3, 64.0, 65.9, 
+                              67.7, 69.2, 69.9, 70.3, 70.7, 71.1, 71.4, 71.7, 
+                              72.0, 72.2, 72.4, 72.5, 72.8, 72.9, 73.0, 73.2, 
+                              73.5, 73.8, 73.9, 74.1, 74.4, 74.6, 74.8, 75.2, 
+                              75.4, 75.6, 75.8, 75.9, 76.0, 76.2, 76.4, 76.6, 
+                              76.8, 76.9, 77.0, 77.1, 77.2, 77.3, 77.4, 77.5, 
+                              77.6, 77.8, 78.0, 78.1, 78.2, 78.2, 78.3, 78.4, 
+                              78.5, 78.5, 78.6, 78.7, 78.9, 79.2, 79.4, 79.5, 
+                              79.6, 79.7, 79.8, 79.9, 80.0, 80.0, 80.0, 80.1, 
+                              80.2, 80.3, 80.4, 80.5, 80.6, 80.8, 80.9, 81.0, 
+                              81.2, 81.3, 81.4, 81.5, 81.7, 81.8, 82.0, 82.1, 
+                              82.3, 82.5, 82.6, 82.8, 82.9, 83.0, 83.1, 83.2, 
+                              83.3, 83.3, 83.3, 83.3]
+        
+        expected_upload_date = up_dates[video_id]
+        expected_last_date = \
+            mktime(strptime('Jun 12, 2013', '%b %d, %Y'))
+        
+        self.assertEqual(13236, video_data['TOTAL_VIEW'])
+        self.assertEqual(51, video_data['TOTAL_COMM'])
+        self.assertEqual(3, video_data['TOTAL_FAVS'])
+        self.assertEqual(26, video_data['TOTAL_LIKE'])
+        self.assertEqual(1, video_data['TOTAL_DISL'])
+        
+        self.assertEqual(expected_view_data, video_data['VIEW_DATA'])
+        self.assertEqual(54.9, video_data['COMM_DATA'][1])
+        self.assertEqual(66.6, video_data['FAVS_DATA'][1])
+        self.assertEqual(65.3, video_data['LIKE_DATA'][1])
+        self.assertEqual(100.0, video_data['DISL_DATA'][1])
+        
+        self.assertEqual(expected_upload_date, video_data['UPLOAD_DATE'])
+        self.assertEqual(expected_upload_date, video_data['FIRST_DATE'])
+        self.assertEqual(expected_last_date, video_data['LAST_DATE'])
+        
+        self.assertEqual(15862, video_data['TOPY'])
+        self.assertEqual(9, len(video_data['EVENTS']))
+    
+    def test_parse_html_new2(self):
         
         video_id = 'ZzmEBY6lVAE'
         up_dates = info_files.up_dates_html_new(NEW_INFO_FILE2)

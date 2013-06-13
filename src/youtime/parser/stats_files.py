@@ -255,7 +255,7 @@ def _parse_html(video_id, html, up_dates):
     
     return video_data
 
-def _parse_html_new (video_id, html, up_dates):
+def _parse_html_new(video_id, html, up_dates):
     ''' 
     Similar to _parse_html
     '''
@@ -316,7 +316,113 @@ def _parse_html_new (video_id, html, up_dates):
     #video_data['HONORS'] = honors
     
     return video_data
+
+def _parse_html_topic(video_id, html, up_dates):
+    ''' 
+    Similar to _parse_html but for files after 2013
+    '''
+    video_data = {}
     
+    #Total Views, if we can't find this. The video has no stats
+    html_soup = BeautifulSoup(html)
+    total_views_str = \
+        html_soup.find('h3').string
+    
+    if not total_views_str:
+        return None
+    
+    #Parse total views
+    total_views = TO_INT(total_views_str)
+    
+    #Total comments, favorites and ratings
+    engage_stats = html_soup.find('div', 
+                                  {'class':'engagement-audience'})
+    
+    totals = engage_stats.findAll('h4')
+    
+    total_comm = TO_INT(totals[0].string)
+    total_favs = TO_INT(totals[1].string)
+    total_likes = TO_INT(totals[2].string)
+    total_dislikes = TO_INT(totals[3].string)
+    
+    #Graphs
+    view_stats = html_soup.find('img', 
+                                {'class':'stats-big-chart-expanded'})
+    
+    view_graph = view_stats['src']
+    
+    engage_graphs = engage_stats.findAll('img')
+    comm_graph = engage_graphs[0]['src']
+    favs_graph = engage_graphs[1]['src']
+    like_graph = engage_graphs[2]['src']
+    disl_graph = engage_graphs[3]['src']
+
+    first_date, last_date, top_y, view_data = \
+        __extract_info_from_view_graph_new(view_graph)
+    
+    comm_data = __extract_points_for_small_graphs(comm_graph)
+    favs_data = __extract_points_for_small_graphs(favs_graph)
+    like_data = __extract_points_for_small_graphs(like_graph)
+    disl_data = __extract_points_for_small_graphs(disl_graph)
+    
+    #Extracting Events
+    event_elements = html_soup.findAll('dd', {'class':'event'})
+    events = []
+    for element in event_elements:
+        name_tag = element.find('span')
+        if name_tag is None:
+            name_tag = element.find('p')
+        
+        name = name_tag.string.strip()
+        
+        additional = ''
+        additional_tag = element.find('span', {'class':'extra'})
+        if additional_tag:
+            link_tag = additional_tag.find('a')
+            if link_tag:
+                additional = link_tag.string
+            else:
+                additional = additional_tag.string
+        
+        date_tag = element.find('p', {'class':'sub-data'})
+        ev_name = ' '.join((name, additional.strip()))
+        
+        date_str = date_tag.string.split('-')[0].strip()
+        fmts = ['%b %d, %Y', '%B %d, %Y']
+        ev_date = None
+        for fmt in fmts:
+            try:
+                ev_date = mktime(strptime(date_str, fmt))
+            except:
+                pass
+        
+        events.append((ev_name, ev_date))
+        
+    
+    #Creating return value
+    video_data['VIDEO_ID'] =  video_id
+    video_data['UPLOAD_DATE'] = up_dates[video_id]
+    video_data['FIRST_DATE'] = first_date
+    video_data['LAST_DATE'] = last_date
+    
+    video_data['TOTAL_VIEW'] = total_views
+    video_data['TOTAL_COMM'] = total_comm
+    video_data['TOTAL_FAVS'] = total_favs
+    video_data['TOTAL_LIKE'] = total_likes
+    video_data['TOTAL_DISL'] = total_dislikes
+    
+    video_data['TOPY'] = top_y
+    
+    video_data['VIEW_DATA'] = view_data
+    video_data['COMM_DATA'] = comm_data
+    video_data['FAVS_DATA'] = favs_data
+    video_data['LIKE_DATA'] = like_data
+    video_data['DISL_DATA'] = disl_data
+    
+    video_data['EVENTS'] = events
+    
+    return video_data
+
 def parse_stats(fpath, up_dates):
     '''
     Parses a stats file returning a list of dictionaries each
@@ -342,7 +448,7 @@ def parse_stats(fpath, up_dates):
             html = content.string
         
             #We can now parse the HTML inside
-            video_data = _parse_html(video_id, html, up_dates)
+            video_data = _parse_html_topic(video_id, html, up_dates)
             if video_data:
                 return_val.append(video_data)
     

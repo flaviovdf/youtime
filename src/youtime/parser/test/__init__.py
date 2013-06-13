@@ -43,3 +43,12 @@ NEW_STATS_FILE = os.path.join(NEW_DATA_DIR, new_stats_fname)
 
 new_stats_fname = 'videostats-ZzmEBY6lVAE16-Feb-2012_10-27-33'
 NEW_STATS_FILE2 = os.path.join(NEW_DATA_DIR, new_stats_fname)
+
+#TOPIC
+TOPIC_DATA_DIR = os.path.join(DATA_DIR, 'topic')
+
+topic_stats_fname = '1371083611594-zgY-cR0kv5Y-stats.html'
+TOPIC_STATS_FILE = os.path.join(TOPIC_DATA_DIR, topic_stats_fname)
+
+topic_info_fname = '1371083611601-zgY-cR0kv5Y-content.html'
+TOPIC_INFO_FILE = os.path.join(TOPIC_DATA_DIR, topic_info_fname)

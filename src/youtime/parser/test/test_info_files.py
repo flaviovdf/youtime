@@ -12,6 +12,7 @@ from youtime.parser.test import ENG_INFO_FILE2
 from youtime.parser.test import NEW_INFO_FILE
 from youtime.parser.test import NEW_INFO_FILE2
 from youtime.parser.test import PTBR_INFO_FILE
+from youtime.parser.test import TOPIC_INFO_FILE
 
 import unittest
 
@@ -41,14 +42,23 @@ class TestInfoFile(unittest.TestCase):
         expected_secs = mktime(strptime(expected, '%b %d, %Y'))
         up_dates = info_files.up_dates_html_new(NEW_INFO_FILE2)
         self.assertEqual(expected_secs, up_dates['ZzmEBY6lVAE'])
-        
+    
+    def test_topic(self):
+        expected = 'Mar 5, 2013'
+        expected_secs = mktime(strptime(expected, '%b %d, %Y'))
+        up_dates = info_files.up_dates_html_topic(TOPIC_INFO_FILE)
+        self.assertEqual(expected_secs, up_dates['zgY-cR0kv5Y'])
+    
     def test_tags_en(self):
         expected = 'valentinchris Sports cioncan maria'
         info = info_files.category_tags_user_en(ENG_INFO_FILE)
         self.assertEqual(expected, info['fhGb6qPiluE'])
 
     def test_tags_en2(self):
-        expected = 'jonlajoie Comedy normal cup song girls f#%k high as rap Lajoie guy everyday Jon'
+        expected = \
+                'jonlajoie Comedy normal cup song girls f#%k high as rap' 
+        expected += ' Lajoie guy everyday Jon'
+        
         info = info_files.category_tags_user_en(ENG_INFO_FILE2)
         self.assertEqual(expected, info['5PsnxDQvQpw'])
         
@@ -61,7 +71,6 @@ class TestInfoFile(unittest.TestCase):
         expected = 'miley1938 Education learning to make sandwish'
         info = info_files.category_tags_user_new(NEW_INFO_FILE2)
         self.assertEqual(expected, info['ZzmEBY6lVAE'])
- 
  
 if __name__ == "__main__":
     unittest.main()

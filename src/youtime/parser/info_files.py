@@ -147,7 +147,7 @@ def up_dates_html_ptbr(fpath):
         
     return return_val
 
-def up_dates_html_new (fpath):
+def up_dates_html_new(fpath):
     '''
     Parses an info HTML file and return the upload date and the videoid found.
     
@@ -170,7 +170,31 @@ def up_dates_html_new (fpath):
     return_val[video_id] = up_date
     
     return return_val
+
+def up_dates_html_topic(fpath):
+    '''
+    Parses an info HTML file and return the upload date and the videoid found.
+    This method should be used for the topic collection of 2013.
     
+    Arguments
+    ---------
+    fpath: str
+        Path to the file
+    ''' 
+    
+    with open(fpath) as info_file:
+        soup = BeautifulSoup(info_file)
+        str_date = soup.find(id="eow-date").string
+        
+    with open(fpath) as info_file:
+        video_id = info_file.readline().strip().split('=')[1].split()[0][:-1]
+        
+    #converting date
+    up_date = mktime(strptime(str_date, '%b %d, %Y'))
+    return_val = {}
+    return_val[video_id] = up_date
+        
+    return return_val
      
 def _get_video_htmls(fpath):
     '''
@@ -258,7 +282,7 @@ def category_tags_user_en(fpath):
 
     return return_val
 
-def category_tags_user_new (fpath):
+def category_tags_user_new(fpath):
     '''
     Parses an info HTML file and returns the name of the uploader,
     the category and tags of a video as a single string per video.
