@@ -9,7 +9,7 @@ from vod.mapreducescript import BaseMapper
 from vod.mapreducescript import BaseReducer
 from vod.mapreducescript import Runner
 
-from youtime.parser.info_files import up_dates_html_ptbr 
+from youtime.parser.info_files import up_dates_html_topic
 from youtime.mapred.ig import ListDir
 
 import os
@@ -18,7 +18,7 @@ import sys
 class UpDatesMapper(BaseMapper):
     
     def _map(self, key, item):
-        dates = up_dates_html_ptbr(item)
+        dates = up_dates_html_topic(item)
         return dates
 
 class UpDatesReducer(BaseReducer):
