@@ -50,5 +50,14 @@ TOPIC_DATA_DIR = os.path.join(DATA_DIR, 'topic')
 topic_stats_fname = '1371083611594-zgY-cR0kv5Y-stats.html'
 TOPIC_STATS_FILE = os.path.join(TOPIC_DATA_DIR, topic_stats_fname)
 
+topic_stats_fname2 = '1371083001541-G-zjxv6hL1o-stats.html'
+TOPIC_STATS_FILE2 = os.path.join(TOPIC_DATA_DIR, topic_stats_fname2)
+
+topic_stats_fname3 = '1371076437632-GYmbNzNHtgE-stats.html'
+TOPIC_STATS_FILE3 = os.path.join(TOPIC_DATA_DIR, topic_stats_fname3)
+
+topic_stats_fname4 = '1371079085840-9Rp33PvBSns-stats.html'
+TOPIC_STATS_FILE4 = os.path.join(TOPIC_DATA_DIR, topic_stats_fname4)
+
 topic_info_fname = '1371083611601-zgY-cR0kv5Y-content.html'
 TOPIC_INFO_FILE = os.path.join(TOPIC_DATA_DIR, topic_info_fname)

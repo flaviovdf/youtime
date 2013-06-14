@@ -28,6 +28,9 @@ from youtime.parser.test import NEW_STATS_FILE2
 
 from youtime.parser.test import TOPIC_INFO_FILE
 from youtime.parser.test import TOPIC_STATS_FILE
+from youtime.parser.test import TOPIC_STATS_FILE2
+from youtime.parser.test import TOPIC_STATS_FILE3
+from youtime.parser.test import TOPIC_STATS_FILE4
 
 import unittest
 
@@ -260,7 +263,45 @@ class TestStatsFile(unittest.TestCase):
         
         self.assertEqual(15862, video_data['TOPY'])
         self.assertEqual(9, len(video_data['EVENTS']))
+
+    def test_parse_topics2(self):
+        video_id = 'G-zjxv6hL1o'
+        up_dates = {'G-zjxv6hL1o':0}
+        
+        xmls = stats_files._get_video_xmls(TOPIC_STATS_FILE2, up_dates)
+        xml_soup = BeautifulStoneSoup(xmls[video_id])
+        html = xml_soup.find('html_content').string
+        
+        try:
+            stats_files._parse_html_topic(video_id, html, up_dates)
+            self.fail()
+        except:
+            pass
+
+    def test_parse_topics3(self):
+        video_id = 'GYmbNzNHtgE'
+        up_dates = {'GYmbNzNHtgE':0}
+        
+        xmls = stats_files._get_video_xmls(TOPIC_STATS_FILE3, up_dates)
+        xml_soup = BeautifulStoneSoup(xmls[video_id])
+        html = xml_soup.find('html_content').string
+        
+        video_data = stats_files._parse_html_topic(video_id, html, up_dates)
+        self.assertEqual(3, video_data['TOPY'])
+        self.assertEqual(2, len(video_data['EVENTS']))
     
+    def test_parse_topics4(self):
+        video_id = '9Rp33PvBSns'
+        up_dates = {'9Rp33PvBSns':0}
+        
+        xmls = stats_files._get_video_xmls(TOPIC_STATS_FILE4, up_dates)
+        xml_soup = BeautifulStoneSoup(xmls[video_id])
+        html = xml_soup.find('html_content').string
+        
+        video_data = stats_files._parse_html_topic(video_id, html, up_dates)
+        self.assertEqual(162, video_data['TOPY'])
+        self.assertEqual(10, len(video_data['EVENTS']))
+          
     def test_parse_html_new2(self):
         
         video_id = 'ZzmEBY6lVAE'

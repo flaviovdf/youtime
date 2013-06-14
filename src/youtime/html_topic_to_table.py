@@ -11,6 +11,7 @@ from parser import stats_files
 
 import glob
 import multiprocessing
+import numpy as np
 import os
 import plac
 import sys
@@ -32,10 +33,15 @@ def extract(fpath):
         top = data['TOPY']
         view_data = data['VIEW_DATA']
 
-        arr = [str(top * x * 0.01) for x in view_data]
-        if len(arr) == 99:
+        arr = [0] + [top * x * 0.01 for x in view_data]
+        if len(arr) == 100:
             arr += [arr[-1]]
-        tseries = ' '.join(arr)
+        
+        arr = np.round(np.diff(arr))
+        
+        assert len(arr) == 100
+        
+        tseries = ' '.join(str(x) for x in arr)
         print('parsed fpath', fpath, len(arr), file=sys.stderr)
         return vid_id, tseries
     except Exception as e:

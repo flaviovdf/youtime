@@ -334,36 +334,56 @@ def _parse_html_topic(video_id, html, up_dates):
     #Parse total views
     total_views = TO_INT(total_views_str)
     
+    if total_views == 0:
+        raise Exception('Video has no views')
+    
     #Total comments, favorites and ratings
     engage_stats = html_soup.find('div', 
                                   {'class':'engagement-audience'})
-    
     totals = engage_stats.findAll('h4')
-    
-    total_comm = TO_INT(totals[0].string)
-    total_favs = TO_INT(totals[1].string)
-    total_likes = TO_INT(totals[2].string)
-    total_dislikes = TO_INT(totals[3].string)
-    
+    if len(totals) == 1:
+        total_comm = 0
+        total_favs = 0
+        total_likes = 0
+        total_dislikes = 0
+        has_engage = False
+    else:
+        total_comm = TO_INT(totals[0].string)
+        total_favs = TO_INT(totals[1].string)
+        total_likes = TO_INT(totals[2].string)
+        total_dislikes = TO_INT(totals[3].string)
+        has_engage = True
+            
     #Graphs
     view_stats = html_soup.find('img', 
                                 {'class':'stats-big-chart-expanded'})
     
-    view_graph = view_stats['src']
+    if view_stats is None:
+        view_stats = html_soup.find('img', 
+                                    {'class':'stats-big-chart-collapsed'})
     
-    engage_graphs = engage_stats.findAll('img')
-    comm_graph = engage_graphs[0]['src']
-    favs_graph = engage_graphs[1]['src']
-    like_graph = engage_graphs[2]['src']
-    disl_graph = engage_graphs[3]['src']
-
+    view_graph = view_stats['src']
     first_date, last_date, top_y, view_data = \
         __extract_info_from_view_graph_new(view_graph)
+
+    if has_engage:   
+        engage_graphs = engage_stats.findAll('img')
+        comm_graph = engage_graphs[0]['src']
+        favs_graph = engage_graphs[1]['src']
+        like_graph = engage_graphs[2]['src']
+        disl_graph = engage_graphs[3]['src']
+        
+        comm_data = __extract_points_for_small_graphs(comm_graph)
+        favs_data = __extract_points_for_small_graphs(favs_graph)
+        like_data = __extract_points_for_small_graphs(like_graph)
+        disl_data = __extract_points_for_small_graphs(disl_graph)
+    else:
+        comm_data = [0] * len(view_data)
+        favs_data = [0] * len(view_data)
+        like_data = [0] * len(view_data)
+        disl_data = [0] * len(view_data)
+
     
-    comm_data = __extract_points_for_small_graphs(comm_graph)
-    favs_data = __extract_points_for_small_graphs(favs_graph)
-    like_data = __extract_points_for_small_graphs(like_graph)
-    disl_data = __extract_points_for_small_graphs(disl_graph)
     
     #Extracting Events
     event_elements = html_soup.findAll('dd', {'class':'event'})
