@@ -325,11 +325,13 @@ def _parse_html_topic(video_id, html, up_dates):
     
     #Total Views, if we can't find this. The video has no stats
     html_soup = BeautifulSoup(html)
+    
+    views_tag = html_soup.find('h3')
+    if views_tag is None:
+        raise Exception('Video has no stats')
+    
     total_views_str = \
         html_soup.find('h3').string
-    
-    if not total_views_str:
-        return None
     
     #Parse total views
     total_views = TO_INT(total_views_str)
@@ -341,7 +343,7 @@ def _parse_html_topic(video_id, html, up_dates):
     engage_stats = html_soup.find('div', 
                                   {'class':'engagement-audience'})
     totals = engage_stats.findAll('h4')
-    if len(totals) == 1:
+    if len(totals) <= 1:
         total_comm = 0
         total_favs = 0
         total_likes = 0

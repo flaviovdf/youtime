@@ -31,6 +31,8 @@ from youtime.parser.test import TOPIC_STATS_FILE
 from youtime.parser.test import TOPIC_STATS_FILE2
 from youtime.parser.test import TOPIC_STATS_FILE3
 from youtime.parser.test import TOPIC_STATS_FILE4
+from youtime.parser.test import TOPIC_STATS_FILE5
+from youtime.parser.test import TOPIC_STATS_FILE6
 
 import unittest
 
@@ -301,7 +303,33 @@ class TestStatsFile(unittest.TestCase):
         video_data = stats_files._parse_html_topic(video_id, html, up_dates)
         self.assertEqual(162, video_data['TOPY'])
         self.assertEqual(10, len(video_data['EVENTS']))
-          
+
+    def test_parse_topics5(self):
+        video_id = 'Qa868FI0h3o'
+        up_dates = {'Qa868FI0h3o':0}
+        
+        xmls = stats_files._get_video_xmls(TOPIC_STATS_FILE5, up_dates)
+        xml_soup = BeautifulStoneSoup(xmls[video_id])
+        html = xml_soup.find('html_content').string
+        
+        video_data = stats_files._parse_html_topic(video_id, html, up_dates)
+        self.assertEqual(37, video_data['TOPY'])
+        self.assertEqual(10, len(video_data['EVENTS']))
+        
+    def test_parse_topics6(self):
+        video_id = 'X2B6-44q91Y'
+        up_dates = {'X2B6-44q91Y':0}
+        
+        xmls = stats_files._get_video_xmls(TOPIC_STATS_FILE6, up_dates)
+        xml_soup = BeautifulStoneSoup(xmls[video_id])
+        html = xml_soup.find('html_content').string
+        
+        try:
+            stats_files._parse_html_topic(video_id, html, up_dates)
+            self.fail()
+        except:
+            pass
+               
     def test_parse_html_new2(self):
         
         video_id = 'ZzmEBY6lVAE'
