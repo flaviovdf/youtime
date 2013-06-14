@@ -23,17 +23,24 @@ def extract(fpath):
     up_dates = {}
     up_dates[vid_id] = 0
      
-    xmls = stats_files._get_video_xmls(fpath, up_dates)
-    xml_soup = BeautifulStoneSoup(xmls[vid_id])
-    html = xml_soup.find('html_content').string
-    
-    data = stats_files._parse_html_topic(vid_id, html, up_dates)
-    
-    top = data['TOPY']
-    view_data = data['VIEW_DATA'] 
+    try:
+        xmls = stats_files._get_video_xmls(fpath, up_dates)
+        xml_soup = BeautifulStoneSoup(xmls[vid_id])
+        html = xml_soup.find('html_content').string
 
-    tseries = ' '.join([ str(top * x) for x in view_data ])
-    return vid_id, tseries
+        data = stats_files._parse_html_topic(vid_id, html, up_dates)
+        top = data['TOPY']
+        view_data = data['VIEW_DATA']
+
+        arr = [str(top * x * 0.01) for x in view_data]
+        if len(arr) == 99:
+            arr += [arr[-1]]
+        tseries = ' '.join(arr)
+        print('parsed fpath', fpath, len(arr), file=sys.stderr)
+        return vid_id, tseries
+    except Exception as e:
+        print('error at fpath', fpath, e, file=sys.stderr)
+        return None
 
 def main(input_folder):
     
@@ -42,7 +49,8 @@ def main(input_folder):
     results = pool.map(extract, fpaths, chunksize=1000)
     
     for result in sorted(results):
-        print(result[0], result[1])
+        if result:
+            print(result[0], result[1])
 
     pool.close()
     pool.join()
