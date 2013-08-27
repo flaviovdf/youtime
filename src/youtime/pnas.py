@@ -114,7 +114,7 @@ class PNASReducer(BaseReducer):
         if value[0] != UNKNOWN:
             self.known += 1
             if value[0] != MEMORYLESS:
-                for threshold in np.arange(0.05, 0.55, 0.05):
+                for i, threshold in enumerate(np.arange(0.05, 0.55, 0.05)):
                     cls = value[threshold]
                     self.vid_classes[threshold][value[threshold]] += 1
                     print(key, NAMES[cls], threshold, file=self.classes_file)
