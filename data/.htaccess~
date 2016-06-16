@@ -1,0 +1,4 @@
+AuthUserFile /var/youtime_passwds/youtimepasswd
+AuthType Basic
+AuthName "My Secret Folder"
+Require valid-user

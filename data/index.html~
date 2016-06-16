@@ -1,0 +1,57 @@
+<HTML> 
+<HEAD> 
+<TITLE>The Tube over Time: Characterizing Popularity Growth of YouTube Videos</TITLE> 
+</HEAD>
+<body style="background-color:#eeeeee;">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19733886-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<h2>The Tube over Time: Characterizing Popularity Growth of YouTube Videos</h2> 
+<p> 
+<a href="http://www.dcc.ufmg.br/~flaviov">Flavio Figueiredo</a>,
+<a href="http://www.dcc.ufmg.br/~fabricio">Fabricio Benevenuto</a>,
+<a href="http://www.dcc.ufmg.br/~jussara">Jussara M. Almeida</a>
+<br><a href="http://www.wsdm2011.org">In Proceedings of the 4th ACM Conference on Web Search and Data Mining</a>, Feb. 2011 
+<h3>Data Description</h3>
+The data is available on CSV format. The first line in each file is the header, each of the following lines are exactly one video. For each video we make availabe:
+<br><br>
+<li><i>#ID</i>: The id of the video. This is a basic Youtube id with 11 characters, for example: abc_12g4567
+<li><i>DAYS</i>: The number of days of information available for the video.
+<li><i>UPLOAD_DATE</i>: The date the video was uploaded (in seconds since Jan 1 1970)
+<li><i>FIRST_DATE</i>: The initial date where any information was available, this will always be UPLOAD_DATE - 1
+<li><i>LAST_DATE</i>: The final date where any information was available, this can be also be viewed as the date which we collected the video
+<li><i>TOTAL_VIEW</i>: Total amount of views
+<li><i>TOTAL_COMM</i>: Total amount of comments
+<li><i>TOTAL_FAVS</i>: Total amount of favorites
+<li><i>TOTAL_RATS</i>: Total amount of ratings
+<li><i>TOTAL_AVGR</i>: Average rating of the video (we collected videos befor Youtube´s like/dislike, when ratings were starts)
+<li><i>VIEW_DATA</i>: An array of the cumulative number of views, this will begin with 0 and end in TOTAL_VIEW
+<li><i>COMM_DATA</i>: An array of the cumulative number of comments, this will begin with 0 and end in TOTAL_COMM
+<li><i>FAVS_DATA</i>: An array of the cumulative number of favorites, this will begin with 0 and end in TOTAL_FAVS
+<li><i>RATS_DATA</i>: An array of the cumulative number of ratings, this will begin with 0 and end in TOTAL_RATS
+<li><i>AVGR_DATA</i>: An array of the average rating per point, this will begin with 0 and end in TOTAL_AVGR
+<li><i>EVENT_TYPES</i>: An array of the different referrers types which lead users to videos. For example, ´First referral from Google search´
+<li><i>EVENT_DATES</i>: An array of the dates of each of the referrers above
+<li><i>EVENT_VIEWS</i>: An array of the amount of views of each of the referrers above
+<br><br>
+These videos correspond to the same videos used in our paper after pre-processing. We chose to publish the data in the format which most resembles how YouTube publishes the same data. For details on how we analyzed this data please read our paper. One of the most important things to point out is that for videos with more than 100 days, only at most 100 points are available for each of the <i>*_DATA</i> array, these points are evenly distributed in the range between <i>FIRST_DATE</i> and <i>LAST_DATE</i>. For example, in a video with 200 days, each data point for will be at every 2 days. For videos with less than 100 days, there will be a point for each day.
+</p>
+<h3>Example of how to read the files</h3>
+The most simple way to deal with this data is to use Python's <i>csv</i> module to convert the data to whatever other format you wish to use. Some string processing will have to be done since in each file arrays were printed out as:
+<br>
+<i>[data0, data1, data2, ...]</i>
+<br><br>
+This script can give you some starting code. (<a href="http://vod.dcc.ufmg.br/traces/youtime/data/site_example.py">site_example.py</a>)
+<h3>Data</h3>
+<li> Top videos(<a href="http://vod.dcc.ufmg.br/traces/youtime/data/top.tar.gz">top.tar.gz</a>
+<li> Random videos (see paper for details on random selection) <a href="http://vod.dcc.ufmg.br/traces/youtime/data/rand.tar.gz">rand.tar.gz</a>
+<li> Youtomb (copyrighted videos) <a href="http://vod.dcc.ufmg.br/traces/youtime/data/youtomb.tar.gz">youtomb.tar.gz</a>  
+</HTML> 
